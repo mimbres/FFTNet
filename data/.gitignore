@@ -1,3 +1,4 @@
 *.wav
 *.csv
 *.npy
+!/processed_slt_arctic/scale_factors.npy
