@@ -22,10 +22,10 @@ dst_dir=$data_root/$name
 url=$base$zipname
 
 
-if [ -d $dst_dir ]; then
-    echo "$name already downloaded"
-    exit 0
-fi
+#if [ -d $dst_dir ]; then
+#    echo "$name already downloaded"
+#    exit 0
+#fi
 
 echo "Downloading from $url..."
 curl -L -o $zipname $url
