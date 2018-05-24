@@ -31,6 +31,8 @@ echo "Downloading from $url..."
 curl -L -o $zipname $url
 unzip -q -o $zipname
 # Arange structure and remove unnecessary files
+rm -rf $dst_dir 
+
 mv $dst_dir/merlin_baseline_practice/acoustic_data/label_state_align $dst_dir
 mv $dst_dir/merlin_baseline_practice/acoustic_data/label_phone_align $dst_dir
 ln -sf $data_root/$question_name $dst_dir/$question_name
