@@ -339,61 +339,61 @@ scale_factors = np.load(DST_ROOT + 'scale_factors.npy').item()
 # IF Testset : resample to 16000 with interp1D --> Removing silence --> save .npy
 
 # Preprocess Train dataset
-#ni = 0 # Index of slices(1 slice =5000 samples)  
-#for i in tqdm(range(0, N_TRAIN)):
-#    sil_sample_idx = Y_silenceIdx[i]
-#    
-#    y_mulaw = Y_mulaw[i]
-#    y_mulaw = y_mulaw[:sil_sample_idx.max()+1]
-#    y_len   = y_mulaw.shape[0]
-#        
-#    x_linguistic = X_linguistic[i]
-#    x_pyworld    = X_pyworld[i]    
-#    x_melmfcc    = X_melmfcc[i]        
-#    
-#    # Feature scaling
-##    x_linguistic = minmax_scale(x_linguistic, scale_factors['linguistic_min'], scale_factors['linguistic_max'], feature_range=(0.01, 0.99))
-##    x_pyworld    = scale(x_pyworld, 0, scale_factors['pyworld_std'])
-##    x_melmfcc    = scale(x_melmfcc, 0, scale_factors['melmfcc_std'])  
-#    
-#    # Resampling fs200(5ms-hop) to fs16000
-#    x_linguistic = librosa.core.resample(x_linguistic.T, 200, args.sr, res_type='kaiser_fast', fix=True, scale=False).T    
-#    x_pyworld    = librosa.core.resample(x_pyworld.T, 200, args.sr, res_type='kaiser_fast', fix=True, scale=False).T 
-#    x_melmfcc    = librosa.core.resample(x_melmfcc.T, 200, args.sr, res_type='kaiser_fast', fix=True, scale=False).T 
-#    
-#    # Reduce unlabeled index
-#    x_linguistic = x_linguistic[:sil_sample_idx.max()+1]
-#    x_pyworld = x_linguistic[:sil_sample_idx.max()+1]
-#    x_melmfcc = x_linguistic[:sil_sample_idx.max()+1]
-#    
-#    # Apply 0 to silence samples
-#    y_mulaw[sil_sample_idx] = 128
-#    
-#    # Save slices (hop=2500, win=5000)
-#    sample_length = len(y_mulaw)
-#    total_slices = int(np.ceil(sample_length/2500))
-#    
-#    y_mulaw      = librosa.util.fix_length(y_mulaw, total_slices*2500, axis=0)
-#    x_linguistic = librosa.util.fix_length(x_linguistic, total_slices*2500, axis=0)
-#    x_pyworld = librosa.util.fix_length(x_pyworld, total_slices*2500, axis=0)
-#    x_melmfcc = librosa.util.fix_length(x_melmfcc, total_slices*2500, axis=0)
-#    
-#    for oneslice in range(total_slices-1):
-#        fname = '{0:012d}.npy'.format(ni) # 000000000000.npy, 000000000001.npy, ...
-#        slice_start_idx, slice_end_idx = oneslice * 2500, oneslice *2500 + 5000
-#        
-#        fpath = DST_ROOT + '/TRAIN/mulaw/' + fname # duplicating '/' is ok.
-#        np.save(fpath, y_mulaw[slice_start_idx:slice_end_idx])
-#        fpath = DST_ROOT + '/TRAIN/linguistic/' + fname 
-#        np.save(fpath, x_linguistic.astype(np.float16)[slice_start_idx:slice_end_idx,:])
-#        fpath = DST_ROOT + '/TRAIN/pyworld/' + fname 
-#        np.save(fpath, x_pyworld.astype(np.float16)[slice_start_idx:slice_end_idx,:])
-#        fpath = DST_ROOT + '/TRAIN/melmfcc/' + fname 
-#        np.save(fpath, x_melmfcc.astype(np.float16)[slice_start_idx:slice_end_idx,:])
-#        
-#        ni += 1    
-##    # Remove silence
-##        features = np.delete(features, labels.silence_frame_indices(), axis=0)
+ni = 0 # Index of slices(1 slice =5000 samples)  
+for i in tqdm(range(0, N_TRAIN)):
+    sil_sample_idx = Y_silenceIdx[i]
+    
+    y_mulaw = Y_mulaw[i]
+    y_mulaw = y_mulaw[:sil_sample_idx.max()+1]
+    y_len   = y_mulaw.shape[0]
+        
+    x_linguistic = X_linguistic[i]
+    x_pyworld    = X_pyworld[i]    
+    x_melmfcc    = X_melmfcc[i]        
+    
+    # Feature scaling
+#    x_linguistic = minmax_scale(x_linguistic, scale_factors['linguistic_min'], scale_factors['linguistic_max'], feature_range=(0.01, 0.99))
+#    x_pyworld    = scale(x_pyworld, 0, scale_factors['pyworld_std'])
+#    x_melmfcc    = scale(x_melmfcc, 0, scale_factors['melmfcc_std'])  
+    
+    # Resampling fs200(5ms-hop) to fs16000
+    x_linguistic = librosa.core.resample(x_linguistic.T, 200, args.sr, res_type='kaiser_fast', fix=True, scale=False).T    
+    x_pyworld    = librosa.core.resample(x_pyworld.T, 200, args.sr, res_type='kaiser_fast', fix=True, scale=False).T 
+    x_melmfcc    = librosa.core.resample(x_melmfcc.T, 200, args.sr, res_type='kaiser_fast', fix=True, scale=False).T 
+    
+    # Reduce unlabeled index
+    x_linguistic = x_linguistic[:sil_sample_idx.max()+1]
+    x_pyworld = x_linguistic[:sil_sample_idx.max()+1]
+    x_melmfcc = x_linguistic[:sil_sample_idx.max()+1]
+    
+    # Apply 0 to silence samples
+    y_mulaw[sil_sample_idx] = 128
+    
+    # Save slices (hop=2500, win=5000)
+    sample_length = len(y_mulaw)
+    total_slices = int(np.ceil(sample_length/2500))
+    
+    y_mulaw      = librosa.util.fix_length(y_mulaw, total_slices*2500, axis=0)
+    x_linguistic = librosa.util.fix_length(x_linguistic, total_slices*2500, axis=0)
+    x_pyworld = librosa.util.fix_length(x_pyworld, total_slices*2500, axis=0)
+    x_melmfcc = librosa.util.fix_length(x_melmfcc, total_slices*2500, axis=0)
+    
+    for oneslice in range(total_slices-1):
+        fname = '{0:012d}.npy'.format(ni) # 000000000000.npy, 000000000001.npy, ...
+        slice_start_idx, slice_end_idx = oneslice * 2500, oneslice *2500 + 5000
+        
+        fpath = DST_ROOT + '/TRAIN/mulaw/' + fname # duplicating '/' is ok.
+        np.save(fpath, y_mulaw[slice_start_idx:slice_end_idx])
+        fpath = DST_ROOT + '/TRAIN/linguistic/' + fname 
+        np.save(fpath, x_linguistic.astype(np.float16)[slice_start_idx:slice_end_idx,:])
+        fpath = DST_ROOT + '/TRAIN/pyworld/' + fname 
+        np.save(fpath, x_pyworld.astype(np.float16)[slice_start_idx:slice_end_idx,:])
+        fpath = DST_ROOT + '/TRAIN/melmfcc/' + fname 
+        np.save(fpath, x_melmfcc.astype(np.float16)[slice_start_idx:slice_end_idx,:])
+        
+        ni += 1    
+#    # Remove silence
+#        features = np.delete(features, labels.silence_frame_indices(), axis=0)
         
 
 # Preprocess Test dataset
