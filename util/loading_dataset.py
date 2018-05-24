@@ -15,6 +15,18 @@ from sklearn import preprocessing
 from sklearn.preprocessing import StandardScaler
 from sklearn.externals import joblib
 
+class CmuArcticDataset(Dataset):
+    def __init__(self, x_root_dir=None, cond_root_dir=None, transform=None):
+
+    def __getitem__(self, index):
+        
+        return
+    
+    def __len__(self):
+        return len(self.file_ids) # return the number of examples that we have
+    
+    
+    
 class YesNoDataset(Dataset):
     def __init__(self, csv_path=None, zpad_target_len=int, transform=None):
         # Internal variables

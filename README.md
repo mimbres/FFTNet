@@ -15,3 +15,10 @@ Note that 2x1 dilated-conv is equivalent with LR split 1x1 conv.
 ## In progress..
  - YesNoDataset
  - CMU Arctic (found a good parser in [r9y9's repository](https://github.com/r9y9/wavenet_vocoder))
+
+
+## Preparing dataset
+'''
+sh util/cmu_arctic_support/download_data.sh
+python util/cmu_arctic_support/prepare_features.py ./data/slt_arctic_full_data
+'''

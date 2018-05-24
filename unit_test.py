@@ -61,3 +61,12 @@ for batch_idx, (_, X_mulaw, X_mfcc ) in enumerate(train_loader):
     X_mulaw = Variable(X_mulaw)
     X_mfcc = Variable(X_mfcc.float())
     
+    
+#%%
+%pylab inline
+import matplotlib
+import seaborn
+seaborn.set_style("dark")
+rcParams['figure.figsize'] = (16, 6)
+
+    
