@@ -50,7 +50,7 @@ parser.add_argument('-o', '--out_data_root_dir', type=str, default='data/process
 parser.add_argument('-max', '--max_num_files', type=int, default=-1, metavar='N',
                     help='max number of files, default=-1 (all files)')
 parser.add_argument('-q', '--question_file_path', type=str, default='data/slt_arctic_full_data/questions-radio_dnn_416.hed', metavar='N',
-                    help='HTS question file path, default=data/processed_slt_arctic/questions-radio_dnn_416.hed')
+                    help='HTS question file path, default=data/slt_arctic_full_data/questions-radio_dnn_416.hed')
 parser.add_argument('-sp', '--split_train_test', type=list, default=[1000,132], metavar='N',
                     help='specify numbers for splitting train and test set, default=[1000,132]')
 args = parser.parse_args()

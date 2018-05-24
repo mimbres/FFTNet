@@ -14,16 +14,34 @@ import pandas as pd
 from sklearn import preprocessing
 from sklearn.preprocessing import StandardScaler
 from sklearn.externals import joblib
+import glob
 
 class CmuArcticDataset(Dataset):
-    def __init__(self, x_root_dir=None, cond_root_dir=None, transform=None):
-
-    def __getitem__(self, index):
+    def __init__(self, x_root_dir=None, cond_root_dir=None, scale_factor_path=None, transform=None):
+        x_root_dir = 'data/processed_slt_arctic/TRAIN/mulaw/'
+        #x_root_dir = 'data/processed_slt_arctic/TEST/'
+        cond_root_dir = 'data/processed_slt_arctic/TRAIN/melmfcc/'
+        #cond_root_dir = 'data/processed_slt_arctic/TEST/melmfcc/'
+        scale_factor_path = 'data/processed_slt_arctic/scale_factors.npy'
+        self.mulaw_filepaths = sorted(glob.glob(x_root_dir + '*.npy'))
+        self.cond_filepaths = sorted(glob.glob(cond_root_dir + '*.npy'))
+        self.file_ids = [path.split('/')[-1][:-4] for path in mulaw_filepaths]
+        self.transform = transform
         
-        return
+    def __getitem__(self, index):
+        # Get 3 items: (file_id, mulaw, cond)
+        file_id = self.file_ids[index]
+        mulaw_filepath = self.mulaw_filepaths[index] 
+        cond_filepath = self.cond_filepaths[index]   
+        
+        x = np.load(mulaw_filepath)                 # size(x) = (T,)
+        cond = np.transpose(np.load(cond_filepath)) # size(cond) = (T,d) --> (d, T)
+        
+        
+        return file_id, x, cond
     
     def __len__(self):
-        return len(self.file_ids) # return the number of examples that we have
+        return len(self.mulaw_filepaths) # return the number of examples that we have
     
     
     
