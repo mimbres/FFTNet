@@ -22,16 +22,17 @@ dst_dir=$data_root/$name
 url=$base$zipname
 
 
-#if [ -d $dst_dir ]; then
-#    echo "$name already downloaded"
-#    exit 0
-#fi
+if [ -d $dst_dir ]; then
+    rm -rf $dst_dir/label_state_align
+    rm -rf $dst_dir/lable_phone_align
+fi
+
 
 echo "Downloading from $url..."
 curl -L -o $zipname $url
 unzip -q -o $zipname
 # Arange structure and remove unnecessary files
-rm -rf $dst_dir 
+
 
 mv $dst_dir/merlin_baseline_practice/acoustic_data/label_state_align $dst_dir
 mv $dst_dir/merlin_baseline_practice/acoustic_data/label_phone_align $dst_dir
