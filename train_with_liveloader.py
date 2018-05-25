@@ -34,7 +34,7 @@ import os
 import argparse
 import numpy as np
 import torch
-#import torch.nn as nn
+from torch.nn import DataParallel 
 import torch.nn.functional as F
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
@@ -48,7 +48,7 @@ parser = argparse.ArgumentParser(description='FFTNet implementation')
 parser.add_argument('-exp', '--exp_name', type=str, default='00', metavar='STR',
                     help='Generated samples will be located in the checkpoints/exp<exp_name> directory. Default="00"') # 
 parser.add_argument('-e', '--max_epoch', type=int, default=10000, metavar='N',
-                    help='Max epoch, Default=100') 
+                    help='Max epoch, Default=10000') 
 parser.add_argument('-btr', '--batch_train', type=int, default=5, metavar='N',
                     help='Batch size for training. e.g. -btr 5')
 parser.add_argument('-bts', '--batch_test', type=int, default=1, metavar='N',
@@ -56,10 +56,15 @@ parser.add_argument('-bts', '--batch_test', type=int, default=1, metavar='N',
 parser.add_argument('-load', '--load', type=str, default=None, metavar='STR',
                     help='e.g. --load checkpoints/exp00/checkpoint_00')
 parser.add_argument('-sint', '--save_interval', type=int, default=100, metavar='N',
-                    help='Save interval., default=10')
+                    help='Save interval., default=100')
+parser.add_argument('-g', '--gpu_id', type=str, default=None, metavar='STR',
+                    help='Multi GPU ids to use')
 args = parser.parse_args()
 
 USE_GPU = torch.cuda.is_available()
+if args.gpu_id is not None:
+    os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_id
+    
 RAND_SEED  = 0
 
 #%% Loading data
@@ -88,7 +93,7 @@ def train(epoch):
     model.train()
     train_loss = 0.
     train_acc = []
-    total_data_sz = len(train_loader)
+    total_data_sz = train_loader.dataset.__len__()
     
     for batch_idx, (_, X_mulaw, X_mfcc ) in enumerate(train_loader):
         if USE_GPU:
@@ -208,6 +213,11 @@ from FFTNet_dilconv import FFTNet    # <-- implemented using 2x1 dilated conv.
 #from FFTNet_split   import FFTNet    # <-- same with paper
 
 model = FFTNet(cond_dim=26).cuda() if USE_GPU else FFTNet(cond_dim=26).cpu()  # or .cuda()
+
+# Multi-gpu support
+if (args.gpu_id is not None) & (torch.cuda.device_count() > 1):
+    model = DataParallel(model).cuda()
+
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-5)
 print_model_sz(model)
 
@@ -218,6 +228,7 @@ if args.load is not None:
 
 for epoch in range(args.max_epoch):
     torch.manual_seed(RAND_SEED + epoch)
+    train_loader.dataset.rand_flush()
     tr_loss, tr_acc = train(epoch)
     
     if (epoch % args.save_interval) is 0:
@@ -225,6 +236,7 @@ for epoch in range(args.max_epoch):
                          'state_dict': model.state_dict(),
                          'optimizer': optimizer.state_dict(),},
                 tr_acc, args.exp_name)
+    
 
 #%% Experiment: generation
 test_file_id = 0 # Select 0~5 for different condition input
