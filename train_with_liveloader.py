@@ -63,7 +63,7 @@ args = parser.parse_args()
 
 USE_GPU = torch.cuda.is_available()
 if args.gpu_id is not None:
-    os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_id
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2'
     
 RAND_SEED  = 0
 
@@ -221,6 +221,8 @@ if (args.gpu_id is not None) & (torch.cuda.device_count() > 1):
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-5)
 print_model_sz(model)
+
+torch.backends.cudnn.benchmark = True
 
 last_epoch = 0
 if args.load is not None:
