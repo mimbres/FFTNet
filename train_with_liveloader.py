@@ -47,12 +47,16 @@ from util.utils import mu_law_decode # required for auditioning generated sample
 parser = argparse.ArgumentParser(description='FFTNet implementation')
 parser.add_argument('-exp', '--exp_name', type=str, default='00', metavar='STR',
                     help='Generated samples will be located in the checkpoints/exp<exp_name> directory. Default="00"') # 
-parser.add_argument('-btr', '--batch_train', type=int, default=1, metavar='N',
+parser.add_argument('-e', '--max_epoch', type=int, default=10000, metavar='N',
+                    help='Max epoch, Default=100') 
+parser.add_argument('-btr', '--batch_train', type=int, default=5, metavar='N',
                     help='Batch size for training. e.g. -btr 5')
 parser.add_argument('-bts', '--batch_test', type=int, default=1, metavar='N',
                     help='Batch size for test. e.g. -bts 5')
 parser.add_argument('-load', '--load', type=str, default=None, metavar='STR',
                     help='e.g. --load checkpoints/exp00/checkpoint_00')
+parser.add_argument('-sint', '--save_interval', type=int, default=100, metavar='N',
+                    help='Save interval., default=10')
 args = parser.parse_args()
 
 USE_GPU = torch.cuda.is_available()
@@ -208,18 +212,19 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999), e
 print_model_sz(model)
 
 
-#load_checkpoint('checkpoints/00/checkpoint.pth.tar')
+if args.load is not None:
+    load_checkpoint('checkpoints/00/checkpoint.pth.tar')
 
 
-for epoch in range(100):
+for epoch in range(args.max_epoch):
     torch.manual_seed(RAND_SEED + epoch)
     tr_loss, tr_acc = train(epoch)
     
-    
-save_checkpoint({'epoch': epoch,
-                 'state_dict': model.state_dict(),
-                 'optimizer': optimizer.state_dict(),},
-                  tr_acc, args.exp_name)
+    if (epoch % args.save_interval) is 0:
+        save_checkpoint({'epoch': epoch,
+                         'state_dict': model.state_dict(),
+                         'optimizer': optimizer.state_dict(),},
+                tr_acc, args.exp_name)
 
 #%% Experiment: generation
 test_file_id = 0 # Select 0~5 for different condition input
