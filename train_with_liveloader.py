@@ -55,7 +55,7 @@ parser.add_argument('-bts', '--batch_test', type=int, default=1, metavar='N',
                     help='Batch size for test. e.g. -bts 5')
 parser.add_argument('-load', '--load', type=str, default=None, metavar='STR',
                     help='e.g. --load checkpoints/exp00/checkpoint_00')
-parser.add_argument('-sint', '--save_interval', type=int, default=100, metavar='N',
+parser.add_argument('-sint', '--save_interval', type=int, default=10, metavar='N',
                     help='Save interval., default=100')
 parser.add_argument('-g', '--gpu_id', type=str, default=None, metavar='STR',
                     help='Multi GPU ids to use')
@@ -191,10 +191,10 @@ def load_checkpoint(filepath):
     optimizer.load_state_dict(dt['optimizer'])
     return dt['epoch']
 
-def save_checkpoint(state, accuracy, exp_name, epoch):
+def save_checkpoint(state, accuracy, exp_name):
     checkpoint_dir = 'checkpoints/' + exp_name  
     os.makedirs(checkpoint_dir, exist_ok=True)
-    filepath = checkpoint_dir + '/checkpoint{}.pth.tar'.format(epoch)
+    filepath = checkpoint_dir + '/checkpoint{}.pth.tar'.format(state['epoch'])
     torch.save(state, filepath)
 
 def history_recorder():
