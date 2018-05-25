@@ -186,14 +186,15 @@ def load_checkpoint(filepath):
     Load pre-trained model.
     '''
     dt = torch.load(filepath)
+    print('Loading from epoch{}...'.format(dt['epoch']) )
     model.load_state_dict(dt['state_dict'])
     optimizer.load_state_dict(dt['optimizer'])
-    return 0
+    return dt['epoch']
 
-def save_checkpoint(state, accuracy, exp_name):
+def save_checkpoint(state, accuracy, exp_name, epoch):
     checkpoint_dir = 'checkpoints/' + exp_name  
     os.makedirs(checkpoint_dir, exist_ok=True)
-    filepath = checkpoint_dir + '/checkpoint.pth.tar'
+    filepath = checkpoint_dir + '/checkpoint{}.pth.tar'.format(epoch)
     torch.save(state, filepath)
 
 def history_recorder():
@@ -221,12 +222,12 @@ if (args.gpu_id is not None) & (torch.cuda.device_count() > 1):
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-5)
 print_model_sz(model)
 
-
+last_epoch = 0
 if args.load is not None:
     #load_checkpoint('checkpoints/00/checkpoint.pth.tar')
-    load_checkpoint(args.load)
+    last_epoch = load_checkpoint(args.load)
 
-for epoch in range(args.max_epoch):
+for epoch in range(last_epoch, args.max_epoch):
     torch.manual_seed(RAND_SEED + epoch)
     train_loader.dataset.rand_flush()
     tr_loss, tr_acc = train(epoch)
