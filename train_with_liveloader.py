@@ -223,8 +223,8 @@ print_model_sz(model)
 
 
 if args.load is not None:
-    load_checkpoint('checkpoints/00/checkpoint.pth.tar')
-
+    #load_checkpoint('checkpoints/00/checkpoint.pth.tar')
+    load_checkpoint(args.load)
 
 for epoch in range(args.max_epoch):
     torch.manual_seed(RAND_SEED + epoch)
