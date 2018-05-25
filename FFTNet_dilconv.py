@@ -40,7 +40,7 @@ FFT_Block:
 '''
 class FFT_Block(nn.Module):
        
-    def __init__(self, cond_dim=25, io_ch=int, recep_sz=int, bias=True):
+    def __init__(self, cond_dim=26, io_ch=int, recep_sz=int, bias=True):
         
         super(FFT_Block, self).__init__()
         self.cond_dim=cond_dim                   # Number of dimensions of condition input
@@ -72,11 +72,11 @@ FFTNet:
     - [11 FFT_blocks] --> [FC_layer] --> [softmax] 
 '''
 class FFTNet(nn.Module):
-    def __init__(self, input_dim=256, cond_dim=25, num_layer=11, io_ch=256, skip_ch=0, bias=True):
+    def __init__(self, input_dim=256, cond_dim=26, num_layer=11, io_ch=256, skip_ch=0, bias=True):
         
         super(FFTNet, self).__init__()
         self.input_dim = input_dim                       # 256 (=num_classes)
-        self.cond_dim = cond_dim                         # 25
+        self.cond_dim = cond_dim                         # 26
         self.num_layer = num_layer                       # 11
         self.io_ch = io_ch                               # 256 ch. in the paper
         self.skip_ch = skip_ch                           # Not implemented yet (no skip channel in the paper)

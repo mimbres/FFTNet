@@ -305,9 +305,11 @@ Y_silenceIdx = FileSourceDataset(SilenceSampleIdxSource(data_root=DATA_ROOT, fra
 X_linguistic = FileSourceDataset(LinguisticSource(data_root=DATA_ROOT, question_path=QUESTION_PATH))
 X_pyworld = FileSourceDataset(PyworldSource(data_root=DATA_ROOT))
 X_melmfcc = FileSourceDataset(MelspecMfccSource(data_root=DATA_ROOT))
-
+print('X_lingusitc with dimension = {}'.format(X_linguistic[0].shape[1]))
+print('X_pyworld with dimension = {}'.format(X_pyworld[0].shape[1]))
+print('X_melmfcc with dimension = {}'.format(X_melmfcc[0].shape[1]))
 # Calculate Scale factors:
-'''
+
 print('Calculating scale factors: This process will take longer than 10 minutes...')
 #wav_len = [len(y) for y in Y]
 #y_min, y_max = minmax(Y, wav_len)
@@ -324,9 +326,8 @@ scale_factors['pyworld_min'], scale_factors['pyworld_max'] = minmax(X_pyworld, s
 scale_factors['melmfcc_mean'], scale_factors['melmfcc_var'] = meanvar(X_melmfcc, scale_factors['pyworld_len'])
 scale_factors['melmfcc_std'] = np.sqrt(scale_factors['melmfcc_var'])
 scale_factors['melmfcc_min'], scale_factors['melmfcc_max'] = minmax(X_melmfcc, scale_factors['pyworld_len'])
-
 np.save(DST_ROOT + 'scale_factors.npy', scale_factors)
-'''
+
 ''' To load scale_factors:
     scale_factors = np.load(DST_ROOT + 'scale_factors.npy').item()  '''
 scale_factors = np.load(DST_ROOT + 'scale_factors.npy').item()
@@ -363,8 +364,8 @@ for i in tqdm(range(0, N_TRAIN)):
     
     # Reduce unlabeled index
     x_linguistic = x_linguistic[:sil_sample_idx.max()+1]
-    x_pyworld = x_linguistic[:sil_sample_idx.max()+1]
-    x_melmfcc = x_linguistic[:sil_sample_idx.max()+1]
+    x_pyworld = x_pyworld[:sil_sample_idx.max()+1]
+    x_melmfcc = x_pyworld[:sil_sample_idx.max()+1]
     
     # Apply 0 to silence samples
     y_mulaw[sil_sample_idx] = 128
