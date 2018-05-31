@@ -55,6 +55,8 @@ parser.add_argument('-bts', '--batch_test', type=int, default=1, metavar='N',
                     help='Batch size for test. e.g. -bts 5')
 parser.add_argument('-load', '--load', type=str, default=None, metavar='STR',
                     help='e.g. --load checkpoints/exp00/checkpoint_00')
+parser.add_argument('-gen', '--generate', type=int, default=None, metavar='N',
+                    help='-gen <number:0~5> ')
 parser.add_argument('-sint', '--save_interval', type=int, default=10, metavar='N',
                     help='Save interval., default=100')
 parser.add_argument('-g', '--gpu_id', type=str, default=None, metavar='STR',
@@ -229,6 +231,14 @@ if args.load is not None:
     #load_checkpoint('checkpoints/00/checkpoint.pth.tar')
     last_epoch = load_checkpoint(args.load)
 
+    
+if args.generate is not None: 
+# Experiment: Generation
+    test_file_id = args. # Select 0~5 for different condition input
+    generator(test_file_id=test_file_id, out_filename='generated{}_epoch{}.wav'.format(args.generate, last_epoch))
+    exit()
+
+# Train     
 for epoch in range(last_epoch, args.max_epoch):
     torch.manual_seed(RAND_SEED + epoch)
     train_loader.dataset.rand_flush()
@@ -241,9 +251,8 @@ for epoch in range(last_epoch, args.max_epoch):
                 tr_acc, args.exp_name)
     
 
-#%% Experiment: generation
-test_file_id = 0 # Select 0~5 for different condition input
-generator(test_file_id=test_file_id, out_filename='aaa.wav')
+
+
 
 
 
