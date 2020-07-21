@@ -1,4 +1,4 @@
-# Neural-K-Pop-Star-FFTNet
+# FFTNet
 Implementation of FFTNet, [paper](http://gfx.cs.princeton.edu/pubs/Jin_2018_FAR/fftnet-jin2018.pdf)
 
 ## FFTNet_split.py
